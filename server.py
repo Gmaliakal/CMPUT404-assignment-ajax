@@ -22,7 +22,7 @@
 
 
 import flask
-from flask import Flask, request
+from flask import Flask, request, redirect, Response
 import json
 app = Flask(__name__)
 app.debug = True
@@ -74,27 +74,77 @@ def flask_post_json():
 @app.route("/")
 def hello():
     '''Return something coherent here.. perhaps redirect to /static/index.html '''
-    return None
+    return redirect("/static/index.html", code=302)
+   
+
 
 @app.route("/entity/<entity>", methods=['POST','PUT'])
 def update(entity):
     '''update the entities via this interface'''
-    return None
+
+    if request.method == 'POST':
+        mydata = flask_post_json()  #loads sent data as a JSON
+      
+        #https://stackoverflow.com/questions/19199872/best-practice-for-restful-post-response
+        myWorld.set(entity,mydata) #Set my world point to the entity and data
+        setentity = myWorld.get(entity)
+
+        return json.dumps(setentity)
+    
+    if request.method == 'PUT':
+        mydata = flask_post_json()  #loads sent data as a JSON
+      
+        #https://stackoverflow.com/questions/19199872/best-practice-for-restful-post-response
+        myWorld.set(entity,mydata) #Set my world point to the entity and data
+        setentity = myWorld.get(entity)
+        return json.dumps(setentity)
+
+
+
+
+    # the_entity=mydata[{entity}]
+
+    # if request.method == 'POST':    #Posts sent data using entity url and data
+    #     x = myWorld.set({entity}, the_entity)
+    #     return json.dumps(myWorld.get({entity}))
+
+    # if request.method == 'PUT':
+    #     myWorld.update({entity},) # Returns the entity which holds multiple key value pairs
+
+    # if request.method == 'GET':
+    #     myWorld.get({entity})
+    
+
+    # myWorld.get
+    # return 'hello {entity}'
+
+    # myWorld.update()
+    
 
 @app.route("/world", methods=['POST','GET'])    
 def world():
     '''you should probably return the world here'''
-    return None
+        
+
+    #if request.method == 'GET':
+        
+        #mydata = flask_post_json()
+       
+    return json.dumps(myWorld.world())
+    
 
 @app.route("/entity/<entity>")    
 def get_entity(entity):
     '''This is the GET version of the entity interface, return a representation of the entity'''
-    return None
+    x = myWorld.get(entity) # Returns the entity which holds multiple key value pairs
+    return json.dumps(x) # Returns the entity as a JSON
+
 
 @app.route("/clear", methods=['POST','GET'])
 def clear():
     '''Clear the world out!'''
-    return None
+    myWorld.clear()
+    return json.dumps(myWorld.world())
 
 if __name__ == "__main__":
     app.run()
