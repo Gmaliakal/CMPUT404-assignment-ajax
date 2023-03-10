@@ -94,8 +94,12 @@ def update(entity):
     if request.method == 'PUT':
         mydata = flask_post_json()  #loads sent data as a JSON
       
-        #https://stackoverflow.com/questions/19199872/best-practice-for-restful-post-response
         myWorld.set(entity,mydata) #Set my world point to the entity and data
+
+        # myWorld.update(entity,"x",mydata['x']) 
+        # myWorld.update(entity,"y",mydata['y'])
+  
+
         setentity = myWorld.get(entity)
         return json.dumps(setentity)
 

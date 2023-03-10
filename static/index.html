@@ -23,12 +23,12 @@
     <script src="json2.js"></script>
   </head> 
 
-  <!-- <div>
-    <h1 style="color:red;">
-        HELLO 
+  <div style="position:relative; ">
+    <h1 style="color:rgb(255, 255, 255); width:70%; float:left; margin:0;">
+        Assignment 4: AJAX
+        <input style="width:30%;min-height: 100%;" id="clear" type="button" value="clear" onclick="clearButton();" />
     </h1>
-    <input id="clickMe" type="button" value="clickme" onclick="clearBoard();" />
-  </div> -->
+  </div>
 
   <body bgcolor="black" height="100%" width="100%"> 
     <canvas id="c" width="100%" height="100%" style="-webkit-tap-highlight-color: transparent;"></canvas> 
@@ -168,6 +168,7 @@ function getPosition(e) {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+//This function adds a new entity to the drawing board //
 function addEntity(entity, data) {
     world[entity] = data;
     //XXX: Send a XHTML Request that updates the entity you just modified!
@@ -176,7 +177,7 @@ function addEntity(entity, data) {
     var url = ''.concat("http://127.0.0.1:5000/entity/",entity);
 
     //do put request if resouce already exist
-    if(counter>500){
+    if(counter>250){
         sendJSONXMLHTTPRequest(url,data, postEntity,"PUT");
 
     }
@@ -186,12 +187,14 @@ function addEntity(entity, data) {
     }
 }
 
+// This function is the callback function for the above function//
 function postEntity(mydata){
     drawNextFrame();
     drawFrame();
 }
 
 
+//This function is called multiple times a second and used to update the board//
 function update() {
     //XXX: TODO Get the world from the webservice using a XMLHTTPRequest
     var url = "http://127.0.0.1:5000/world";
@@ -199,36 +202,37 @@ function update() {
 
 }
 
+//This function returns the world and updates any changes for the client
 function getWorld(pythonworld){
 
 
-    for (key in pythonworld){
-        world[key]=pythonworld[key];
+    //checks to see if we have cleared the board
+    if (Object.keys(pythonworld).length === 0){
+        for (key in world){
+            world[key]["colour"]="#000"
+        }
+        
+        drawNextFrame();
+        drawFrame();
+        world = {};
+        
+        counter=0;
     }
-    drawNextFrame();
-    drawFrame();
+
+    else{
+        for (key in pythonworld){
+            world[key]=pythonworld[key];
+        }
+        drawNextFrame();
+        drawFrame();
+    }
 }
 
+function clearButton(){
+    var url = "http://127.0.0.1:5000/clear";
+    sendJSONXMLHTTPRequest(url, '', getWorld,"GET");
 
-// function clearBoard(){
-
-// var url = "http://127.0.0.1:5000/clear";
-// sendJSONXMLHTTPRequest(url, '', cleartheWorld,"GET");
-
-// }
-
-// function cleartheWorld(pythonworld){
-//     // for (key in pythonworld){
-//     //     world[key]=pythonworld[key];
-//     // }
-    
-//     counter = 0;
-//     world={};
-// }
-
-
-
-
+}
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -237,7 +241,7 @@ function getWorld(pythonworld){
 var counter = 0;
 function addEntityWithoutName(data) {
     //var name = "X"+Math.floor((Math.random()*100)+1);
-    var name = "X"+(counter++)%500;
+    var name = "X"+(counter++)%250;
     addEntity(name,data);
 }
 
