@@ -22,11 +22,10 @@
     "/>
     <script src="json2.js"></script>
   </head> 
-
-  <div style="position:relative; ">
-    <h1 style="color:rgb(255, 255, 255); width:70%; float:left; margin:0;">
-        Assignment 4: AJAX
-        <input style="width:30%;min-height: 100%;" id="clear" type="button" value="clear" onclick="clearButton();" />
+  <div style="position:relative; display: inline-block;" >
+    <h1 style="color:rgb(255, 255, 255); margin:0; display: inline-block;">
+        Draw something!
+        <input style="display: inline-block; background-color: wheat; border: solid; border-color: lightgray;" id="clear" type="button" value="clear" onclick="clearButton();" />
     </h1>
   </div>
 
@@ -43,22 +42,16 @@ var H = canvas.height = window.innerHeight-50;
 function sendJSONXMLHTTPRequest(url, objects, callback, request) {
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function () {
-        //console.log("here1")
-        //console.log(xhr.readyState)
         if (xhr.readyState==4) {
             try {
-                //console.log("here2")
-                //console.log(xhr.status)
                 if (xhr.status==200) {
-                    
                     //https://stackoverflow.com/questions/47824949/getting-json-data-from-xmlhttprequest
                     var x = xhr.responseText;
-                    //console.log(x);
-                    var response = JSON.parse(x);
-                    callback(response);
                     
                     //XXX: parse some JSON from the request!
                     //XXX: Pass the data to the callback!
+                    var response = JSON.parse(x);
+                    callback(response);
                 }
             } 
             catch(e) {
@@ -68,21 +61,12 @@ function sendJSONXMLHTTPRequest(url, objects, callback, request) {
     };
 
     
-
-    xhr.open(request, url, true);
-    xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-    //console.log(JSON.stringify(objects));
-
-    // if (objects == ''){
-    //     xhr.send()
-    // }
-    // else{
-    xhr.send(JSON.stringify(objects));
-    //}
-
     //XXX: POST to a URL
     //XXX: set the mimetype and the accept headers!
     // Remember to use application/json !
+    xhr.open(request, url, true);
+    xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    xhr.send(JSON.stringify(objects));
 }
 
 
@@ -92,13 +76,14 @@ world = {};
 function drawCircle(context,entity) {
     with(context) {
         beginPath();              
-        lineWidth = 20;
+        lineWidth = 0;
         var x = entity["x"];
         var y = entity["y"];
         //moveTo(x,y);
         fillStyle = entity["colour"];
         strokeStyle = fillStyle;
         arc(x, y, (entity["radius"])?entity["radius"]:50, 0, 2.0 * Math.PI, false);  
+        fill()
         stroke();                                
     }
 }
@@ -180,7 +165,7 @@ function addEntity(entity, data) {
     
 
     //do put request if resouce already exist
-    if(counter>250){
+    if(counter>max_elements){
         sendJSONXMLHTTPRequest(url,data, postEntity,"PUT");
 
     }
@@ -211,7 +196,7 @@ function update() {
 function getWorld(pythonworld){
 
 
-    //checks to see if we have cleared the board
+    //checks to see if we have cleared the board and clear it 
     if (Object.keys(pythonworld).length === 0){
         for (key in world){
             world[key]["colour"]="#000"
@@ -224,6 +209,7 @@ function getWorld(pythonworld){
         counter=0;
     }
 
+    // update elements that were pushed to the world
     else{
         for (key in pythonworld){
             world[key]=pythonworld[key];
@@ -246,9 +232,10 @@ function clearButton(){
 
 
 var counter = 0;
+var max_elements = 250;//used to change max elements to be drawn on the board
 function addEntityWithoutName(data) {
     //var name = "X"+Math.floor((Math.random()*100)+1);
-    var name = "X"+(counter++)%250;
+    var name = "X"+(counter++)%max_elements;
     addEntity(name,data);
 }
 

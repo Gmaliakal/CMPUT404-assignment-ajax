@@ -88,52 +88,18 @@ def update(entity):
         #https://stackoverflow.com/questions/19199872/best-practice-for-restful-post-response
         myWorld.set(entity,mydata) #Set my world point to the entity and data
         setentity = myWorld.get(entity)
-
         return json.dumps(setentity)
     
     if request.method == 'PUT':
         mydata = flask_post_json()  #loads sent data as a JSON
-      
         myWorld.set(entity,mydata) #Set my world point to the entity and data
-
-        # myWorld.update(entity,"x",mydata['x']) 
-        # myWorld.update(entity,"y",mydata['y'])
-  
-
         setentity = myWorld.get(entity)
         return json.dumps(setentity)
-
-
-
-
-    # the_entity=mydata[{entity}]
-
-    # if request.method == 'POST':    #Posts sent data using entity url and data
-    #     x = myWorld.set({entity}, the_entity)
-    #     return json.dumps(myWorld.get({entity}))
-
-    # if request.method == 'PUT':
-    #     myWorld.update({entity},) # Returns the entity which holds multiple key value pairs
-
-    # if request.method == 'GET':
-    #     myWorld.get({entity})
-    
-
-    # myWorld.get
-    # return 'hello {entity}'
-
-    # myWorld.update()
     
 
 @app.route("/world", methods=['POST','GET'])    
 def world():
     '''you should probably return the world here'''
-        
-
-    #if request.method == 'GET':
-        
-        #mydata = flask_post_json()
-       
     return json.dumps(myWorld.world())
     
 
