@@ -174,7 +174,10 @@ function addEntity(entity, data) {
     //XXX: Send a XHTML Request that updates the entity you just modified!
 
     // We want to post to the actual entity url
-    var url = ''.concat("http://127.0.0.1:5000/entity/",entity);
+    var base_url = window.location.origin; //Source: https://stackoverflow.com/questions/25203124/how-to-get-base-url-with-jquery-or-javascript, Author: Haris N I
+    var url = ''.concat(base_url,"/entity/",entity);
+    //var url = ''.concat("http://127.0.0.1:5000/entity/",entity);
+    
 
     //do put request if resouce already exist
     if(counter>250){
@@ -197,7 +200,9 @@ function postEntity(mydata){
 //This function is called multiple times a second and used to update the board//
 function update() {
     //XXX: TODO Get the world from the webservice using a XMLHTTPRequest
-    var url = "http://127.0.0.1:5000/world";
+    var base_url = window.location.origin;  //Source: https://stackoverflow.com/questions/25203124/how-to-get-base-url-with-jquery-or-javascript, Author: Haris N I
+    var url = base_url+"/world"
+    //var url = "http://127.0.0.1:5000/world";
     sendJSONXMLHTTPRequest(url, '', getWorld,"GET");
 
 }
@@ -229,7 +234,9 @@ function getWorld(pythonworld){
 }
 
 function clearButton(){
-    var url = "http://127.0.0.1:5000/clear";
+    var base_url = window.location.origin;  //Source: https://stackoverflow.com/questions/25203124/how-to-get-base-url-with-jquery-or-javascript, Author: Haris N I
+    var url = base_url + "/clear"
+    //var url = "http://127.0.0.1:5000/clear";
     sendJSONXMLHTTPRequest(url, '', getWorld,"GET");
 
 }
